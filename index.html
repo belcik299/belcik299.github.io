@@ -72,129 +72,138 @@
             masterGain.gain.value = 0.3;
             masterGain.connect(audioCtx.destination);
 
-            const melodyNotes = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 1046.5, 1174.66, 1046.5, 880.00, 783.99, 698.46];
-            let step = 0, tickCount = 0, lavaCount = 0;
+            let tickCount = 0;
 
             function kick() {
                 const osc = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
-                g.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.12);
+                g.gain.setValueAtTime(0.35, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
                 osc.connect(g);
                 g.connect(masterGain);
                 osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.15);
+                osc.stop(audioCtx.currentTime + 0.12);
             }
 
             function snare() {
-                const n = noise(audioCtx, 0.12);
+                const n = noise(audioCtx, 0.1);
                 const g = audioCtx.createGain();
                 const f = audioCtx.createBiquadFilter();
                 f.type = 'highpass';
-                f.frequency.value = 1000;
-                g.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+                f.frequency.value = 800;
+                g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 n.connect(f);
                 f.connect(g);
                 g.connect(masterGain);
                 n.start(audioCtx.currentTime);
-                n.stop(audioCtx.currentTime + 0.12);
+                n.stop(audioCtx.currentTime + 0.1);
             }
 
-            function hat(open) {
-                const n = noise(audioCtx, open ? 0.3 : 0.04);
+            function hat() {
+                const n = noise(audioCtx, 0.03);
                 const g = audioCtx.createGain();
                 const f = audioCtx.createBiquadFilter();
                 f.type = 'highpass';
-                f.frequency.value = open ? 5000 : 7000;
-                g.gain.setValueAtTime(open ? 0.06 : 0.1, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (open ? 0.3 : 0.04));
+                f.frequency.value = 8000;
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
                 n.connect(f);
                 f.connect(g);
                 g.connect(masterGain);
                 n.start(audioCtx.currentTime);
-                n.stop(audioCtx.currentTime + (open ? 0.3 : 0.04));
+                n.stop(audioCtx.currentTime + 0.03);
             }
 
-            function chicken() {
-                for (let i = 0; i < 3; i++) {
-                    const osc = audioCtx.createOscillator();
-                    const g = audioCtx.createGain();
-                    osc.type = 'square';
-                    const freqs = [1200, 1400, 1600];
-                    osc.frequency.value = freqs[i];
-                    g.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.06);
-                    g.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + i * 0.06 + 0.02);
-                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.06 + 0.08);
-                    osc.connect(g);
-                    g.connect(masterGain);
-                    osc.start(audioCtx.currentTime + i * 0.06);
-                    osc.stop(audioCtx.currentTime + i * 0.06 + 0.08);
-                }
-            }
-
-            function lava() {
-                const freq = 200 + Math.random() * 300;
+            function powerChord(freq, time, dur) {
                 const osc = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(freq * 1.5, audioCtx.currentTime + 0.15);
-                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.type = 'sawtooth';
+                osc.frequency.value = freq;
+                g.gain.setValueAtTime(0, audioCtx.currentTime + time);
+                g.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + time + 0.02);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + time + dur);
                 osc.connect(g);
                 g.connect(masterGain);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.2);
+                osc.start(audioCtx.currentTime + time);
+                osc.stop(audioCtx.currentTime + time + dur);
+
+                const osc2 = audioCtx.createOscillator();
+                const g2 = audioCtx.createGain();
+                osc2.type = 'sawtooth';
+                osc2.frequency.value = freq * 1.5;
+                g2.gain.setValueAtTime(0, audioCtx.currentTime + time);
+                g2.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + time + 0.02);
+                g2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + time + dur);
+                osc2.connect(g2);
+                g2.connect(masterGain);
+                osc2.start(audioCtx.currentTime + time);
+                osc2.stop(audioCtx.currentTime + time + dur);
             }
 
-            function tick() {
-                if (!playing) return;
-                const bpm = 150;
-                const beatMs = 60000 / bpm;
-                const bar = 16;
-
-                const t = tickCount % bar;
-
-                if (t % bar === 0) kick();
-                if (t % bar === 8) kick();
-                if (t % 4 === 2) snare();
-                if (t % 4 === 6) snare();
-                if (t % 2 === 1) hat(false);
-                if (t % 16 === 14) hat(true);
-
-                if (t % 4 === 0) {
-                    const note = melodyNotes[step % melodyNotes.length];
+            function lavaChant() {
+                const notes = [392, 440, 494, 523];
+                notes.forEach((n, i) => {
                     const osc = audioCtx.createOscillator();
                     const g = audioCtx.createGain();
                     osc.type = 'square';
-                    osc.frequency.value = note;
-                    g.gain.setValueAtTime(0.07, audioCtx.currentTime);
-                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+                    osc.frequency.value = n;
+                    g.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.15);
+                    g.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + i * 0.15 + 0.03);
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.12);
                     osc.connect(g);
                     g.connect(masterGain);
-                    osc.start(audioCtx.currentTime);
-                    osc.stop(audioCtx.currentTime + 0.12);
+                    osc.start(audioCtx.currentTime + i * 0.15);
+                    osc.stop(audioCtx.currentTime + i * 0.15 + 0.12);
+                });
+            }
 
-                    const osc2 = audioCtx.createOscillator();
-                    const g2 = audioCtx.createGain();
-                    osc2.type = 'triangle';
-                    osc2.frequency.value = note * 0.25;
-                    g2.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                    g2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
-                    osc2.connect(g2);
-                    g2.connect(masterGain);
-                    osc2.start(audioCtx.currentTime);
-                    osc2.stop(audioCtx.currentTime + 0.3);
+            function rockMelody() {
+                const riff = [523.25, 0, 659.25, 0, 783.99, 0, 659.25, 0, 587.33, 0, 659.25, 0, 523.25, 0, 440, 0];
+                riff.forEach((n, i) => {
+                    if (n === 0) return;
+                    const osc = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.value = n;
+                    const t = i * 0.08;
+                    g.gain.setValueAtTime(0, audioCtx.currentTime + t);
+                    g.gain.linearRampToValueAtTime(0.07, audioCtx.currentTime + t + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + t + 0.06);
+                    osc.connect(g);
+                    g.connect(masterGain);
+                    osc.start(audioCtx.currentTime + t);
+                    osc.stop(audioCtx.currentTime + t + 0.06);
+                });
+            }
+
+            let section = 0;
+            function tick() {
+                if (!playing) return;
+                const bpm = 160;
+                const beatMs = 60000 / bpm;
+
+                const t = tickCount % 32;
+
+                if (t % 4 === 0) kick();
+                if (t % 4 === 2) snare();
+                if (t % 2 === 1) hat();
+
+                if (tickCount % 128 === 0) {
+                    section = (section + 1) % 4;
+                    if (section % 2 === 0) rockMelody();
+                    else lavaChant();
                 }
 
-                if (tickCount % 32 === 16) chicken();
-                if (tickCount % 12 === 7) lava();
+                if (t % 8 === 0) {
+                    const chords = [[196, 0], [220, 0], [261.63, 0], [220, 0]];
+                    const c = chords[Math.floor(tickCount / 8) % 4];
+                    if (c) powerChord(c[0], 0, 0.4);
+                }
 
-                step++;
                 tickCount++;
                 melodyTimeout = setTimeout(tick, beatMs / 4);
             }
@@ -207,8 +216,8 @@
                     btn.classList.remove('on');
                 } else {
                     playing = true;
-                    step = 0;
                     tickCount = 0;
+                    section = 0;
                     masterGain.gain.value = 0.3;
                     tick();
                     btn.classList.add('on');
