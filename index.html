@@ -53,44 +53,101 @@
         }
     </script>
     <script>
-        let audioCtx, gainNode, playing = false;
+        let audioCtx, masterGain, playing = false;
         const btn = document.getElementById('musicBtn');
+        let bassInterval, melodyTimeout;
 
         function initAudio() {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            gainNode = audioCtx.createGain();
-            gainNode.gain.value = 0.3;
-            gainNode.connect(audioCtx.destination);
+            masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.25;
+            masterGain.connect(audioCtx.destination);
 
-            const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33];
-            let timeout;
+            const melody = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 523.25, 587.33, 659.25, 523.25, 440.00, 392.00];
+            const bass = [130.81, 146.83, 164.81, 174.61, 196.00, 220.00, 261.63, 293.66, 261.63, 220.00, 196.00, 174.61];
+            let step = 0;
 
-            function playNote() {
+            function playMelody() {
                 if (!playing) return;
                 const osc = audioCtx.createOscillator();
-                const noteGain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.value = notes[Math.floor(Math.random() * notes.length)];
-                noteGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                noteGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.5);
-                noteGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2.5);
-                osc.connect(noteGain);
-                noteGain.connect(gainNode);
+                const g = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = melody[step % melody.length];
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.05);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.25);
+                osc.connect(g);
+                g.connect(masterGain);
                 osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 2.5);
-                timeout = setTimeout(playNote, Math.random() * 3000 + 2000);
+                osc.stop(audioCtx.currentTime + 0.25);
+
+                const osc2 = audioCtx.createOscillator();
+                const g2 = audioCtx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.value = melody[(step + 7) % melody.length] * 0.5;
+                g2.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                g2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+                osc2.connect(g2);
+                g2.connect(masterGain);
+                osc2.start(audioCtx.currentTime);
+                osc2.stop(audioCtx.currentTime + 0.4);
+
+                step++;
+                melodyTimeout = setTimeout(playMelody, 220);
+            }
+
+            function playBass() {
+                if (!playing) return;
+                const osc = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = bass[Math.floor(Math.random() * bass.length)];
+                g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.6);
+                osc.connect(g);
+                g.connect(masterGain);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.6);
+            }
+
+            let beat = 0;
+            function playBeat() {
+                if (!playing) return;
+                const osc = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = beat % 2 === 0 ? 80 : 60;
+                g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.connect(g);
+                g.connect(masterGain);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.08);
+
+                if (beat % 4 === 0) playBass();
+                beat++;
+            }
+
+            function fullLoop() {
+                if (!playing) return;
+                playBeat();
+                setTimeout(fullLoop, 180);
             }
 
             btn.onclick = () => {
                 if (playing) {
                     playing = false;
-                    clearTimeout(timeout);
-                    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+                    clearTimeout(melodyTimeout);
+                    clearInterval(bassInterval);
+                    masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
                     btn.classList.remove('on');
                 } else {
                     playing = true;
-                    gainNode.gain.value = 0.3;
-                    playNote();
+                    masterGain.gain.value = 0.25;
+                    step = 0;
+                    beat = 0;
+                    playMelody();
+                    fullLoop();
                     btn.classList.add('on');
                 }
             };
