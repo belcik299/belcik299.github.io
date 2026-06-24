@@ -14,25 +14,6 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    position: relative;
-    overflow-x: hidden;
-}
-
-.scanlines {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(51, 255, 51, 0.03) 2px,
-        rgba(51, 255, 51, 0.03) 4px
-    );
-    pointer-events: none;
-    z-index: 1000;
 }
 
 header {
@@ -40,120 +21,27 @@ header {
     margin-bottom: 3rem;
 }
 
-.tag {
-    font-size: 0.85rem;
-    color: #33ff33;
-    margin-bottom: 1rem;
-    letter-spacing: 0.05em;
-}
-
-.blink {
-    animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-    50% { opacity: 0; }
-}
-
 h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 2.5rem;
     color: #33ff33;
-    text-shadow: 0 0 10px rgba(51, 255, 51, 0.7),
-                 0 0 20px rgba(51, 255, 51, 0.4);
-    position: relative;
-    margin-bottom: 0.5rem;
-}
-
-.glitch::before,
-.glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-}
-
-.glitch::before {
-    color: #00ff00;
-    animation: glitch1 3s infinite;
-}
-
-.glitch::after {
-    color: #66ff66;
-    animation: glitch2 3s infinite;
-}
-
-@keyframes glitch1 {
-    0%, 90%, 100% { transform: translate(0); opacity: 0; }
-    92% { transform: translate(-2px, 1px); opacity: 0.6; }
-    94% { transform: translate(2px, -1px); opacity: 0.6; }
-    96% { transform: translate(-1px, 2px); opacity: 0.6; }
-}
-
-@keyframes glitch2 {
-    0%, 90%, 100% { transform: translate(0); opacity: 0; }
-    92% { transform: translate(2px, -1px); opacity: 0.6; }
-    94% { transform: translate(-2px, 1px); opacity: 0.6; }
-    96% { transform: translate(1px, -2px); opacity: 0.6; }
+    text-shadow: 3px 3px 0 #1a8a1a;
+    margin-bottom: 1rem;
+    line-height: 1.4;
 }
 
 .subtitle {
     font-size: 1rem;
     color: #33ff33;
-    margin-bottom: 0.5rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     font-weight: 600;
     opacity: 0.7;
 }
 
-.status {
-    font-size: 0.75rem;
-    color: #33ff33;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.6;
-}
-
-.dot {
-    width: 6px;
-    height: 6px;
-    background: #33ff33;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #33ff33;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
 section {
     width: 100%;
     max-width: 480px;
-}
-
-h2 {
-    font-size: 0.85rem;
-    color: #33ff33;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    opacity: 0.6;
-}
-
-.prompt {
-    color: #33ff33;
-    opacity: 0.8;
 }
 
 .links {
@@ -167,53 +55,37 @@ h2 {
     align-items: center;
     justify-content: space-between;
     padding: 0.85rem 1.25rem;
-    background: rgba(51, 255, 51, 0.03);
-    border: 1px solid rgba(51, 255, 51, 0.12);
-    border-radius: 4px;
+    border: 2px solid #33ff33;
     text-decoration: none;
     color: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     transition: all 0.15s;
+    image-rendering: pixelated;
 }
 
 .link-card:hover {
-    background: rgba(51, 255, 51, 0.06);
-    border-color: rgba(51, 255, 51, 0.3);
-    box-shadow: 0 0 15px rgba(51, 255, 51, 0.05);
-    padding-left: 1.5rem;
-}
-
-.info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+    background: #33ff33;
+    color: #0d0d0d;
 }
 
 .label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: #33ff33;
-}
-
-.handle {
-    font-size: 0.75rem;
-    color: #33ff33;
-    opacity: 0.5;
 }
 
 .arrow {
-    color: #33ff33;
-    opacity: 0;
-    transition: opacity 0.15s;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    opacity: 0.5;
 }
 
 .link-card:hover .arrow {
-    opacity: 0.8;
+    opacity: 1;
 }
 
 footer {
     margin-top: 3rem;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #33ff33;
     opacity: 0.4;
 }
