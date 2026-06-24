@@ -73,8 +73,7 @@
             masterGain.connect(audioCtx.destination);
 
             const melodyNotes = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 1046.5, 1174.66, 1046.5, 880.00, 783.99, 698.46];
-            const bassLine = [130.81, 146.83, 164.81, 174.61, 196.00, 220.00, 261.63, 293.66, 261.63, 220.00, 196.00, 174.61];
-            let step = 0, tickCount = 0;
+            let step = 0, tickCount = 0, lavaCount = 0;
 
             function kick() {
                 const osc = audioCtx.createOscillator();
@@ -120,26 +119,46 @@
                 n.stop(audioCtx.currentTime + (open ? 0.3 : 0.04));
             }
 
-            function pluck(freq, time, vol) {
+            function chicken() {
+                for (let i = 0; i < 3; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    osc.type = 'square';
+                    const freqs = [1200, 1400, 1600];
+                    osc.frequency.value = freqs[i];
+                    g.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.06);
+                    g.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + i * 0.06 + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.06 + 0.08);
+                    osc.connect(g);
+                    g.connect(masterGain);
+                    osc.start(audioCtx.currentTime + i * 0.06);
+                    osc.stop(audioCtx.currentTime + i * 0.06 + 0.08);
+                }
+            }
+
+            function lava() {
+                const freq = 200 + Math.random() * 300;
                 const osc = audioCtx.createOscillator();
                 const g = audioCtx.createGain();
-                osc.type = 'square';
-                osc.frequency.value = freq;
-                g.gain.setValueAtTime(vol, audioCtx.currentTime + time);
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + time + 0.12);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(freq * 1.5, audioCtx.currentTime + 0.15);
+                g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
                 osc.connect(g);
                 g.connect(masterGain);
-                osc.start(audioCtx.currentTime + time);
-                osc.stop(audioCtx.currentTime + time + 0.12);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.2);
             }
 
             function tick() {
                 if (!playing) return;
-                const bpm = 140;
+                const bpm = 150;
                 const beatMs = 60000 / bpm;
                 const bar = 16;
 
                 const t = tickCount % bar;
+
                 if (t % bar === 0) kick();
                 if (t % bar === 8) kick();
                 if (t % 4 === 2) snare();
@@ -147,22 +166,33 @@
                 if (t % 2 === 1) hat(false);
                 if (t % 16 === 14) hat(true);
 
-                if (t % 4 === 0 || t % 4 === 2) {
+                if (t % 4 === 0) {
                     const note = melodyNotes[step % melodyNotes.length];
-                    pluck(note, 0, 0.07);
-
-                    const bassN = bassLine[Math.floor(tickCount / 4) % bassLine.length];
                     const osc = audioCtx.createOscillator();
                     const g = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.value = bassN;
-                    g.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                    g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                    osc.type = 'square';
+                    osc.frequency.value = note;
+                    g.gain.setValueAtTime(0.07, audioCtx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
                     osc.connect(g);
                     g.connect(masterGain);
                     osc.start(audioCtx.currentTime);
-                    osc.stop(audioCtx.currentTime + 0.3);
+                    osc.stop(audioCtx.currentTime + 0.12);
+
+                    const osc2 = audioCtx.createOscillator();
+                    const g2 = audioCtx.createGain();
+                    osc2.type = 'triangle';
+                    osc2.frequency.value = note * 0.25;
+                    g2.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    g2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                    osc2.connect(g2);
+                    g2.connect(masterGain);
+                    osc2.start(audioCtx.currentTime);
+                    osc2.stop(audioCtx.currentTime + 0.3);
                 }
+
+                if (tickCount % 32 === 16) chicken();
+                if (tickCount % 12 === 7) lava();
 
                 step++;
                 tickCount++;
