@@ -172,6 +172,29 @@ h1 {
     font-family: 'JetBrains Mono', monospace;
     transition: all 0.2s;
     image-rendering: pixelated;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.music-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+    background: #ff4444;
+    transform: translateY(-50%) rotate(-45deg) scaleX(0);
+    transition: transform 0.2s;
+}
+
+.music-btn.on::after {
+    transform: translateY(-50%) rotate(-45deg) scaleX(0);
+}
+
+.music-btn:not(.on)::after {
+    transform: translateY(-50%) rotate(-45deg) scaleX(1);
 }
 
 .music-btn:hover {
