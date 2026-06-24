@@ -49,6 +49,43 @@
             star.style.animationDelay = (Math.random() * 5) + 's';
             container.appendChild(star);
         }
+
+        const cursorFrames = [
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-cursor-1.png',
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-cursor-2.png',
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-custom-cursor-3.png',
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-custom-cursor-4.png',
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-custom-cursor-5.png',
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-custom-cursor-6.png',
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-custom-cursor-7.png',
+            'https://sweezy-cursors.com/wp-content/uploads/cursor/minecraft-enchanted-trident-animated/minecraft-enchanted-trident-animated-custom-cursor-8.png'
+        ];
+
+        const cursorEl = document.createElement('div');
+        cursorEl.id = 'customCursor';
+        cursorEl.style.cssText = 'position:fixed;width:64px;height:64px;pointer-events:none;z-index:99999;transform:translate(-6px,-6px);image-rendering:pixelated;display:none';
+        const img = document.createElement('img');
+        img.style.cssText = 'width:100%;height:100%;image-rendering:pixelated';
+        cursorEl.appendChild(img);
+        document.body.appendChild(cursorEl);
+
+        let frameIdx = 0;
+        setInterval(() => {
+            if (cursorEl.style.display !== 'none') {
+                frameIdx = (frameIdx + 1) % cursorFrames.length;
+                img.src = cursorFrames[frameIdx];
+            }
+        }, 75);
+
+        document.addEventListener('mousemove', e => {
+            cursorEl.style.display = 'block';
+            cursorEl.style.left = e.clientX + 'px';
+            cursorEl.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursorEl.style.display = 'none';
+        });
     </script>
 </body>
 </html>
