@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="bg"></div>
-    <div class="particles" id="particles"></div>
+    <div class="stars" id="stars"></div>
 
     <div class="container">
         <div class="left">
@@ -36,18 +36,18 @@
     </footer>
 
     <script>
-        const colors = ['#4488ff', '#6699ff', '#44bbff', '#5599ff', '#3366cc'];
-        const container = document.getElementById('particles');
-        for (let i = 0; i < 30; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'particle';
-            dot.style.left = Math.random() * 100 + '%';
-            dot.style.top = Math.random() * 100 + '%';
-            dot.style.width = dot.style.height = (Math.random() * 4 + 2) + 'px';
-            dot.style.background = colors[Math.floor(Math.random() * colors.length)];
-            dot.style.animationDuration = (Math.random() * 6 + 4) + 's';
-            dot.style.animationDelay = (Math.random() * 5) + 's';
-            container.appendChild(dot);
+        const container = document.getElementById('stars');
+        for (let i = 0; i < 120; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            const size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            star.style.animationDelay = (Math.random() * 5) + 's';
+            container.appendChild(star);
         }
     </script>
 </body>
