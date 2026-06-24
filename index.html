@@ -6,10 +6,14 @@
     <title>belcik299</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="bg"></div>
+    <div class="fog"></div>
+    <div class="particles" id="particles"></div>
+
     <div class="container">
         <div class="left">
             <h1>belcik299</h1>
@@ -29,7 +33,23 @@
     </div>
 
     <footer>
-        <p>$ belcik299@ctf</p>
+        <p>© 2026 belcik299</p>
     </footer>
+
+    <script>
+        const colors = ['#33ff33', '#55ff55', '#88ff88', '#66ff99', '#44dd44'];
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 40; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'particle';
+            dot.style.left = Math.random() * 100 + '%';
+            dot.style.top = Math.random() * 100 + '%';
+            dot.style.width = dot.style.height = (Math.random() * 4 + 2) + 'px';
+            dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+            dot.style.animationDuration = (Math.random() * 6 + 4) + 's';
+            dot.style.animationDelay = (Math.random() * 5) + 's';
+            container.appendChild(dot);
+        }
+    </script>
 </body>
 </html>
