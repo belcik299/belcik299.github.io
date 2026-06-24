@@ -156,6 +156,32 @@ h1 {
     opacity: 1;
 }
 
+.music-btn {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 100;
+    background: rgba(20, 30, 50, 0.5);
+    border: 2px solid #88aaff;
+    color: #88aaff;
+    font-size: 1.4rem;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+    image-rendering: pixelated;
+}
+
+.music-btn:hover {
+    background: #88aaff;
+    color: #0a0a1a;
+}
+
+.music-btn.on {
+    box-shadow: 0 0 15px rgba(100, 150, 255, 0.4);
+}
+
 footer {
     margin-top: 4rem;
     font-size: 0.7rem;
